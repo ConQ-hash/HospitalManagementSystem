@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <!-- Fail the build on warnings in CI -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

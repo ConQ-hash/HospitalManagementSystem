@@ -1,0 +1,41 @@
+Title,Body,Labels,Milestone,Estimate,Priority,Dependencies
+Create .NET solution with Clean Architecture skeleton,"Projects: Api, Application, Domain, Infrastructure, Tests. Add Directory.Build.props, analyzers, nullable, implicit usings.","backend,setup",M0 – Repo & DevEx,4h,P0,
+Add EF Core + Sqlite dev database,Install EF Core packages; add DbContext; configure connection string; health check endpoint.,"backend,db",M0 – Repo & DevEx,3h,P0,
+Add initial migration & apply,"Create migration, ensure created on startup in Dev; add tooling scripts.","backend,db",M0 – Repo & DevEx,2h,P0,Add EF Core + Sqlite dev database
+Wire Serilog + minimal structured logging,"Request logging, correlation IDs, console sink; dev-friendly template.","backend,observability",M0 – Repo & DevEx,2h,P1,
+Implement JWT auth,"Endpoints: /auth/login, /auth/refresh, /auth/logout. Store refresh tokens (DB).","backend,auth",M1 – Auth & RBAC,6h,P0,Create .NET solution with Clean Architecture skeleton
+Seed roles and admin user,"Roles: Admin, Doctor, Nurse, Receptionist, Pharmacist. Admin bootstrap via config.","backend,auth,seed",M1 – Auth & RBAC,2h,P0,Implement JWT auth
+Add policy-based authorization,RBAC policies for each resource; secure controllers by role; add unit tests for auth policies.,"backend,auth",M1 – Auth & RBAC,4h,P0,Implement JWT auth; Seed roles and admin user
+Rate limiting & CORS,Add ASP.NET rate limiting middleware; configure CORS for localhost dev.,"backend,security",M1 – Auth & RBAC,2h,P2,
+Patients module (CRUD + search + soft delete),"Endpoints: GET/POST/PATCH/DELETE /patients, /patients/{id}, filters & pagination.","backend,patients",M2 – Core Domain (Patients/Doctors),8h,P0,Add EF Core + Sqlite dev database
+Doctors module (CRUD + schedule view stub),"Endpoints: /doctors, /doctors/{id}, /doctors/{id}/schedule (stub).","backend,doctors",M2 – Core Domain (Patients/Doctors),6h,P0,Add EF Core + Sqlite dev database
+Validation & problem details middleware,FluentValidation; RFC7807 problem responses; global exception handling.,"backend,quality",M2 – Core Domain (Patients/Doctors),3h,P0,Patients module (CRUD + search + soft delete)
+Schedules & resources model,Entities for resource slots; APIs /schedules (GET/POST). Conflict detection utilities.,"backend,schedules",M3 – Scheduling & Appointments,6h,P0,Doctors module (CRUD + schedule view stub)
+Appointments booking with conflict detection,"Endpoints: /appointments (GET/POST/PATCH), idempotent POST via Idempotency-Key.","backend,appointments",M3 – Scheduling & Appointments,8h,P0,Schedules & resources model
+Appointment reminders (adapter stub),Endpoint: /appointments/{id}/remind -> send via notifications pipeline (no external provider).,"backend,appointments,notifications",M3 – Scheduling & Appointments,2h,P2,Appointments booking with conflict detection
+Departments/Wards/Beds data model,"Endpoints: /departments, /wards, /beds. Bed status transitions.","backend,admissions",M4 – Admissions & Beds,6h,P0,Add EF Core + Sqlite dev database
+Admissions lifecycle,"Endpoints: /admissions (POST/GET/PATCH), /admissions/{id}/discharge. Transfers & validations.","backend,admissions",M4 – Admissions & Beds,8h,P0,Departments/Wards/Beds data model
+Encounters & Vitals,"Endpoints: /encounters, /patients/{id}/vitals (GET/POST).","backend,clinical",M5 – Clinical (Encounters/Vitals/Rx),6h,P1,Patients module (CRUD + search + soft delete)
+Prescriptions,"Endpoints: /prescriptions (GET/POST/PATCH), /prescriptions/{id}/cancel.","backend,clinical,pharmacy",M5 – Clinical (Encounters/Vitals/Rx),6h,P1,Encounters & Vitals
+Pharmacy inventory,Endpoints: /drugs (GET/POST/PATCH); low stock filters; expiries.,"backend,pharmacy",M6 – Pharmacy,6h,P1,Prescriptions
+Dispensing & stock decrement,Endpoint: /dispense. Atomic stock updates; basic locking.,"backend,pharmacy",M6 – Pharmacy,6h,P1,Pharmacy inventory
+Lab test catalog,Endpoints: /lab/tests (GET/POST).,"backend,laboratory",M7 – Laboratory,4h,P1,
+Lab orders & results,"Endpoints: /lab/orders (GET/POST/PATCH), /lab/orders/{id}/results.","backend,laboratory",M7 – Laboratory,8h,P1,Lab test catalog
+Invoices,"Endpoints: /billing/invoices (GET/POST/PATCH), totals & balances.","backend,billing",M8 – Billing & Payments,6h,P0,Patients module (CRUD + search + soft delete)
+Payments (idempotent),Endpoint: /billing/invoices/{id}/payments (POST); Idempotency-Key support.,"backend,billing",M8 – Billing & Payments,6h,P0,Invoices
+Void invoice,Endpoint: /billing/invoices/{id}/void (POST).,"backend,billing",M8 – Billing & Payments,3h,P1,Invoices
+Insurance payers & claims,"Endpoints: /insurance/payers (GET), /insurance/claims (GET/POST/PATCH).","backend,insurance",M9 – Insurance,6h,P2,Invoices
+Notifications pipeline (provider-agnostic),"Abstraction + in-memory provider; /notifications (GET), /notifications/test (POST).","backend,notifications",M10 – Notifications,6h,P2,
+Reports,"Endpoints: /reports/* (admissions, revenue, occupancy, lab-turnaround). Query-optimized reads.","backend,reporting",M11 – Reporting,8h,P1,Invoices; Admissions lifecycle; Lab orders & results
+Audit trail,"Save actor, action, entity, timestamp. /audit (GET). Middleware/hook for writes.","backend,audit",M12 – Audit & Config,6h,P0,
+System config endpoints,"GET/PATCH /config. Feature toggles e.g., appointment slot length, low-stock threshold.","backend,config",M12 – Audit & Config,4h,P2,
+Security hardening,"OWASP checks: headers, HTTPS enforcement (behind proxy), input size limits, model binding limits.","backend,security",M13 – NFR: Security/Perf/Obs,6h,P0,Add policy-based authorization
+Performance budgets & profiling,Define latency SLAs; add minimal caching where safe; EF query tuning; indexes.,"backend,performance",M13 – NFR: Security/Perf/Obs,6h,P1,Patients module (CRUD + search + soft delete)
+Observability (metrics & tracing),Prometheus/OpenTelemetry exporters; request metrics; DB timings; correlation IDs plumbed.,"backend,observability",M13 – NFR: Security/Perf/Obs,6h,P1,Wire Serilog + minimal structured logging
+GitHub Actions CI,"Build, test, lint; cache NuGet; artifacts for API spec & swagger. Fail build if OpenAPI drift detected.","backend,ci",M14 – CI/CD & Deploy,6h,P0,
+Containerization & compose,"Dockerfile (release+dev), docker-compose for API + DB; healthchecks.","backend,devops",M14 – CI/CD & Deploy,6h,P0,Add EF Core + Sqlite dev database
+Environment configs & migrations,Appsettings per env; automatic migrations gated by env var; secrets via env.,"backend,devops",M14 – CI/CD & Deploy,4h,P1,Add initial migration & apply
+Seed data & fixtures,Minimal realistic data for demo & tests. Factories/builders for tests.,"backend,seed",M15 – Seed Data & Fixtures,4h,P1,Patients module (CRUD + search + soft delete)
+OpenAPI sync & Swagger UI,Expose /swagger with the 3.1 spec; keep in sync with controllers; add example payloads.,"backend,docs",M16 – OpenAPI Sync & Docs,4h,P0,
+Postman collection export,Export from OpenAPI; include environment with baseUrl + auth token variable.,"backend,docs",M16 – OpenAPI Sync & Docs,2h,P2,OpenAPI sync & Swagger UI
+UAT checklist & release notes,Smoke tests across modules; verify RBAC; prepare v1.0.0 notes and migration guide.,"backend,release",M17 – UAT & Hardening,4h,P0,Reports; Audit trail; Security hardening
