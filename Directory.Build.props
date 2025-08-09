@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable nullable reference types -->
+    <Nullable>enable</Nullable>
+
+    <!-- Use implicit global using directives -->
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Use the latest major C# language version -->
+    <LangVersion>latestMajor</LangVersion>
+
+    <!-- Enable .NET analyzers -->
+    <AnalysisLevel>latest</AnalysisLevel>
+
+    <!-- Do NOT treat warnings as errors locally -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>
